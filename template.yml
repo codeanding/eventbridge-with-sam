@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  anime-news
+
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+
+  Function:
+    CodeUri: ./dist
+    Runtime: nodejs18.x
+    MemorySize: 128
+    Timeout: 10
+    AutoPublishAlias: Live
+
+    Environment:
+      Variables:
+        CRUNCHYROLL_RSS_URL: !Sub '{{resolve:ssm:/${Env}/services/shared/CRUNCHYROLL_RSS_URL}}'
+        SLACK_WEBHOOK_URL: !Sub '{{resolve:ssm:/${Env}/services/shared/SLACK_WEBHOOK_URL}}'
+
+Resources:
+  fetchAndSendNews:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: tasks/fetch-news.fetchAndSendNews
+      Description: Fetch news from Crunchyroll using RSS
+      MemorySize: 300
+      Timeout: 900
+
+      Events:
+        InvocationLevel:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
+            Enabled: true

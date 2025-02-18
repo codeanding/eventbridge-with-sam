@@ -1,0 +1,24 @@
+{
+  "name": "prisma-lambda-layer",
+  "description": "Example of aws sam + prisma",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc && cp package.json yarn.lock dist/ && yarn --cwd ./dist install --production --force",
+    "start:sam": "sam local start-api",
+    "start": "yarn build",
+    "deploy": "sam build && sam deploy --profile codeanding",
+    "deploy:guided": "sam deploy --guided --profile codeanding"
+  },
+  "author": "@codeanding",
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "axios": "^1.7.9",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^22.13.4",
+    "@types/xml2js": "^0.4.14",
+    "typescript": "^5.7.3"
+  }
+}
